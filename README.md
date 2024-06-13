@@ -66,3 +66,12 @@ sudo chmod +x change_login_background.sh
 wget -O ~/new_login_background.jpg https://example.com/path/to/your/image.jpg
 sudo ./change_login_background.sh ~/new_login_background.jpg
 sudo reboot
+
+## License
+
+This project is licensed under the MIT License with the following additional clauses:
+
+**Disclaimer:** THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. See the [LICENSE](LICENSE) file for details.
+
+**Limitation of Liability:** In no event shall the author be held liable for any damages arising from the use of this software.
+
