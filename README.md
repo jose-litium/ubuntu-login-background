@@ -14,7 +14,7 @@ The `change_login_background.sh` script modifies your GDM configuration to chang
 
     ```sh
     cd ~
-    wget https://raw.githubusercontent.com/your-username/ubuntu-login-background/main/change_login_background.sh
+    wget https://raw.githubusercontent.com/jose-litium/ubuntu-login-background/main/change_login_background.sh
     ```
 
 2. **Make the Script Executable**
@@ -61,7 +61,7 @@ The `change_login_background.sh` script modifies your GDM configuration to chang
 
 ```sh
 cd ~
-wget https://raw.githubusercontent.com/your-username/ubuntu-login-background/main/change_login_background.sh
+wget https://raw.githubusercontent.com/jose-litium/ubuntu-login-background/main/change_login_background.sh
 sudo chmod +x change_login_background.sh
 wget -O ~/new_login_background.jpg https://example.com/path/to/your/image.jpg
 sudo ./change_login_background.sh ~/new_login_background.jpg
