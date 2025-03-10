@@ -1,43 +1,73 @@
 #!/bin/bash
 
-# Ensure the script is run as superuser
+# Verificar que se ejecute como root
 if [ "$EUID" -ne 0 ]; then
-  echo "Please run as superuser"
-  exit
-fi
-
-# Check if the correct number of arguments is provided
-if [ "$#" -ne 1 ]; then
-  echo "Usage: $0 path_to_image"
+  echo "Por favor, ejecuta el script como root (o con sudo)."
   exit 1
 fi
 
-IMAGE_PATH="$1"
+# Ajusta esta ruta a la que hayas encontrado
+GDM_CONFIG_FILE="/usr/share/gnome-shell/theme/ubuntu.css"
+BACKUP_FILE="/usr/share/gnome-shell/theme/ubuntu.css.bak"
 
-# Check if the file exists
-if [ ! -f "$IMAGE_PATH" ]; then
-  echo "The file $IMAGE_PATH does not exist."
-  exit 1
-fi
-
-# Create a directory for custom backgrounds
 CUSTOM_BACKGROUND_DIR="/usr/share/backgrounds/custom"
-mkdir -p "$CUSTOM_BACKGROUND_DIR"
+SYSTEM_BACKGROUND_DIR="/usr/share/backgrounds"
 
-# Copy the image to the custom backgrounds directory
+function select_image() {
+  local selected_path
+  if command -v zenity &>/dev/null; then
+    selected_path=$(zenity --file-selection \
+                           --title="Selecciona una imagen para la pantalla de login" \
+                           --filename="$SYSTEM_BACKGROUND_DIR/" \
+                           --file-filter="Imágenes | *.png *.jpg *.jpeg *.bmp *.tiff" \
+                           --file-filter="Todos los archivos | *.*")
+    if [ -z "$selected_path" ]; then
+      echo "No se seleccionó ninguna imagen."
+      exit 1
+    fi
+  else
+    echo "Zenity no está instalado. Se usará selección manual."
+    read -rp "Introduce la ruta completa de la imagen: " selected_path
+    if [ -z "$selected_path" ]; then
+      echo "No se introdujo ninguna ruta de imagen. Abortando."
+      exit 1
+    fi
+  fi
+  echo "$selected_path"
+}
+
+IMAGE_PATH="$(select_image)"
+
+if [ ! -f "$IMAGE_PATH" ]; then
+  echo "El archivo '$IMAGE_PATH' no existe. Abortando."
+  exit 1
+fi
+
+mkdir -p "$CUSTOM_BACKGROUND_DIR"
 cp "$IMAGE_PATH" "$CUSTOM_BACKGROUND_DIR/"
 
-# Get the filename
 IMAGE_FILENAME=$(basename "$IMAGE_PATH")
 
-# Set the login screen background
-GDM_CONFIG_DIR="/etc/alternatives/gdm3.css"
-BACKUP_FILE="/etc/alternatives/gdm3.css.bak"
+if [ ! -f "$BACKUP_FILE" ]; then
+  echo "Creando copia de seguridad en $BACKUP_FILE"
+  cp "$GDM_CONFIG_FILE" "$BACKUP_FILE"
+else
+  echo "Ya existe una copia de seguridad en $BACKUP_FILE"
+fi
 
-# Backup the current GDM configuration
-cp "$GDM_CONFIG_DIR" "$BACKUP_FILE"
+# Eliminar referencias anteriores
+sed -i '/#lockDialogGroup {/,/}/ {
+  /background: url/d
+  /background-size:/d
+}' "$GDM_CONFIG_FILE"
 
-# Modify the GDM configuration to set the background
-sed -i "/#lockDialogGroup {/a\  background: url(file://$CUSTOM_BACKGROUND_DIR/$IMAGE_FILENAME);\n  background-size: cover;" "$GDM_CONFIG_DIR"
+# Insertar nueva referencia
+sed -i "/#lockDialogGroup {/a\  background: url(file://$CUSTOM_BACKGROUND_DIR/$IMAGE_FILENAME);\n  background-size: cover;" "$GDM_CONFIG_FILE"
 
-echo "Login background changed to $IMAGE_PATH. A backup of the original configuration is saved at $BACKUP_FILE."
+echo "====================================================="
+echo "¡Fondo de pantalla de login actualizado con éxito!"
+echo "Imagen seleccionada: $IMAGE_PATH"
+echo "Se ha guardado una copia de seguridad en: $BACKUP_FILE"
+echo "Para revertir, restaura manualmente ese archivo:"
+echo "  sudo cp $BACKUP_FILE $GDM_CONFIG_FILE"
+echo "====================================================="
