@@ -1,77 +1,27 @@
-# Ubuntu Login Background
+# Ubuntu Login Background Changer
 
-This repository contains a script and instructions to change the Ubuntu login screen background image.
+A simple script to change the GDM (GNOME Display Manager) login background on Ubuntu-based systems.
 
-## Script: `change_login_background.sh`
+## Features
 
-The `change_login_background.sh` script modifies your GDM configuration to change the login screen background.
+- Lets you select a custom image via a GUI file picker (using **Zenity**) or via manual path input if Zenity is not installed.
+- Backs up the original GDM theme file before modifying it.
+- Prevents duplicate background entries in the CSS file by removing prior references.
+- Allows easy revert by restoring the backup file.
 
-### Instructions
+## Requirements
 
-1. **Download the Script**
+- **Ubuntu or Debian-based distro** with GNOME Display Manager (gdm3) or a similar GDM-based environment.
+- **Root privileges** (run as `sudo`).
+- [Optional] **Zenity** for graphical file selection dialog (`sudo apt install zenity`).
 
-    Download the script from this repository to your home directory.
+> **Important**: The exact location of the GDM CSS file may vary by distro. Common paths:
+> - `/usr/share/gnome-shell/theme/gdm3.css`
+> - `/usr/share/gnome-shell/theme/ubuntu.css`
+> - `/etc/alternatives/gdm3.css` (older versions)
 
-    ```sh
-    cd ~
-    wget https://raw.githubusercontent.com/jose-litium/ubuntu-login-background/main/change_login_background.sh
-    ```
+## Installation
 
-2. **Make the Script Executable**
-
-    Make the script executable by running:
-
-    ```sh
-    sudo chmod +x change_login_background.sh
-    ```
-
-3. **Download an Image**
-
-    Download an image that you want to use as your new login background. You can use `wget` to download an image from the internet. For example, to download an image from a URL:
-
-    ```sh
-    wget -O ~/new_login_background.jpg https://example.com/path/to/your/image.jpg
-    ```
-
-    Replace `https://example.com/path/to/your/image.jpg` with the URL of the image you want to download.
-
-4. **Run the Script**
-
-    Run the script with superuser permissions, providing the path to your desired background image:
-
-    ```sh
-    sudo ./change_login_background.sh /path/to/your/image.png
-    ```
-
-    For example:
-
-    ```sh
-    sudo ./change_login_background.sh ~/new_login_background.jpg
-    ```
-
-5. **Restart Your System**
-
-    After running the script, restart your system to apply the changes:
-
-    ```sh
-    sudo reboot
-    ```
-
-### Summary of Commands
-
-```sh
-cd ~
-wget https://raw.githubusercontent.com/jose-litium/ubuntu-login-background/main/change_login_background.sh
-sudo chmod +x change_login_background.sh
-wget -O ~/new_login_background.jpg https://example.com/path/to/your/image.jpg
-sudo ./change_login_background.sh ~/new_login_background.jpg
-sudo reboot
-
-## License
-
-This project is licensed under the MIT License with the following additional clauses:
-
-**Disclaimer:** THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. See the [LICENSE](LICENSE) file for details.
-
-**Limitation of Liability:** In no event shall the author be held liable for any damages arising from the use of this software.
-
+1. Clone or download this repository:
+   ```bash
+   git clone https://github.com/yourusername/your-project.git
